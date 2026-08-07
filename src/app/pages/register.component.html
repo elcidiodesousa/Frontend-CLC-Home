@@ -1,0 +1,90 @@
+<div class="page">
+
+<form 
+[formGroup]="form"
+(ngSubmit)="submit()">
+
+
+<a routerLink="/">
+<img src="assets/clc-mark.svg">
+<b>CLC</b> HOME
+</a>
+
+
+<span>Criar conta</span>
+
+
+<h1>
+Faça parte do CLC Home
+</h1>
+
+
+<div class="grid">
+
+<label>
+Nome
+<input formControlName="nome">
+</label>
+
+
+<label>
+Email
+<input type="email" formControlName="email">
+</label>
+
+</div>
+
+
+<div class="grid">
+
+<label>
+Telefone
+<input formControlName="telefone">
+</label>
+
+
+<label>
+Província
+<input formControlName="provincia">
+</label>
+
+</div>
+
+
+<label>
+Endereço
+<input formControlName="endereco">
+</label>
+
+
+<label>
+Senha
+<input 
+type="password"
+formControlName="password">
+</label>
+
+
+<p *ngIf="error()">
+{{error()}}
+</p>
+
+
+<button>
+Criar conta
+</button>
+
+
+<small>
+Já tem conta?
+
+<a routerLink="/entrar">
+Entrar
+</a>
+
+</small>
+
+
+</form>
+
+</div>

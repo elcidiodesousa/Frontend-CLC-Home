@@ -1,0 +1,105 @@
+<div class="auth">
+
+<section class="visual">
+
+<app-logo></app-logo>
+
+<div>
+<span>Plataforma cultural</span>
+
+<h1>
+Eventos que conectam talentos.
+</h1>
+
+<p>
+Gestão completa de eventos, inscrições,
+avaliações e resultados.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="panel">
+
+<form [formGroup]="form"
+(ngSubmit)="submit()">
+
+
+<img src="assets/clc-mark.svg">
+
+
+<span>
+Bem-vindo
+</span>
+
+
+<h2>
+Entrar na conta
+</h2>
+
+
+<p>
+Faça login para continuar.
+</p>
+
+
+
+<label>
+Email
+
+<input 
+type="email"
+formControlName="email"
+placeholder="seu@email.com">
+
+</label>
+
+
+
+<label>
+Senha
+
+<input 
+type="password"
+formControlName="password"
+placeholder="••••••••">
+
+</label>
+
+
+
+<div class="err" *ngIf="error()">
+
+{{error()}}
+
+</div>
+
+
+
+<button>
+
+{{loading()?'A entrar...':'Entrar'}}
+
+</button>
+
+
+
+<small>
+
+Não tem conta?
+
+<a routerLink="/registar">
+Registar
+</a>
+
+</small>
+
+
+</form>
+
+</section>
+
+
+</div>
