@@ -1,1 +1,3 @@
-export const environment={apiUrl:'http://localhost:8080/api'};
+﻿export const environment={
+  apiUrl:'https://clc-home-api.onrender.com/api'
+};
