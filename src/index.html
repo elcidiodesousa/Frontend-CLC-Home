@@ -1,18 +1,28 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt" data-theme="light" data-palette="original">
 <head>
   <meta charset="utf-8">
-  <title>CLC Home</title>
+  <title>CLC Home · Eventos e talentos</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CLC Home — plataforma de gestão de eventos, inscrições, votação e talentos.">
+  <meta name="theme-color" content="#14112e">
   <link rel="icon" href="assets/clc-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Angular Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Só é necessário um conjunto de ícones: o estilo global força "Material Icons Round" -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script>
+    /* Aplica tema e paleta antes do Angular arrancar (evita o "flash" de tema claro) */
+    try {
+      var s = JSON.parse(localStorage.getItem('clc_settings_v17_1') || '{}');
+      var r = document.documentElement;
+      if (s.mode) r.setAttribute('data-theme', s.mode);
+      if (s.palette) r.setAttribute('data-palette', s.palette);
+      if (s.compact) r.classList.add('compact-navigation');
+    } catch (e) {}
+  </script>
 </head>
 <body><app-root></app-root></body>
 </html>

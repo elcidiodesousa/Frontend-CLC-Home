@@ -1,0 +1,152 @@
+<div class="app-shell" [class.menu-open]="menuOpen()">
+
+  <!-- ===== Barra lateral ===== -->
+  <aside class="sidebar" aria-label="Navegação principal">
+    <div class="side-head">
+      <a routerLink="/" class="brand-link" aria-label="Ir para a página pública"><app-logo [compact]="true"/></a>
+      <button type="button" class="collapse-btn" (click)="toggleCompact()"
+              [attr.aria-label]="compact() ? 'Expandir menu' : 'Recolher menu'" [title]="compact() ? 'Expandir menu' : 'Recolher menu'">
+        <mat-icon>{{ compact() ? 'keyboard_double_arrow_right' : 'keyboard_double_arrow_left' }}</mat-icon>
+      </button>
+    </div>
+
+    <a class="user-card" routerLink="/app/perfil" [title]="auth.user()?.email ?? ''">
+      <div class="avatar">{{ initial() }}</div>
+      <div class="who">
+        <strong>{{ displayName() }}</strong>
+        <span class="role">{{ roleLabel() }}</span>
+      </div>
+      <mat-icon class="chev">chevron_right</mat-icon>
+    </a>
+
+    <nav>
+      @for (group of groups(); track group.title) {
+        <div class="group">
+          <p class="group-title">{{ group.title }}</p>
+          @for (item of group.items; track item.link) {
+            <a [routerLink]="item.link" routerLinkActive="active" [attr.title]="compact() ? item.label : null">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span class="label">{{ item.label }}</span>
+              @if (item.badge && notifications.unread() > 0) {
+                <em class="count">{{ notifications.unread() }}</em>
+              }
+            </a>
+          }
+        </div>
+      }
+    </nav>
+
+    <div class="side-foot">
+      <button type="button" class="logout" (click)="auth.logout()" title="Terminar sessão">
+        <mat-icon>logout</mat-icon><span class="label">Terminar sessão</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===== Área de trabalho ===== -->
+  <div class="workspace">
+    <header class="topbar">
+      <button type="button" class="icon-btn menu-btn" (click)="menuOpen.set(!menuOpen())" aria-label="Abrir menu">
+        <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
+      </button>
+
+      <div class="crumbs" aria-live="polite">
+        <span class="crumb-group">{{ page().section }}</span>
+        <mat-icon class="crumb-sep">chevron_right</mat-icon>
+        <strong>{{ page().title }}</strong>
+      </div>
+
+      <div class="search-wrap" data-dd>
+        <label class="search">
+          <mat-icon>search</mat-icon>
+          <input #searchInput type="search" autocomplete="off" placeholder="Ir para uma página…" aria-label="Pesquisa rápida"
+                 [value]="query()" (input)="onSearch($any($event.target).value)" (focus)="searchOpen.set(true); dropdown.set('')"
+                 (keydown)="onSearchKey($event)">
+          <kbd>Ctrl K</kbd>
+        </label>
+
+        @if (searchOpen()) {
+          <div class="panel-pop search-panel" role="listbox">
+            @if (results().length) {
+              <p class="pop-title">{{ query() ? 'Resultados' : 'Acesso rápido' }}</p>
+              @for (hit of results(); track hit.link; let i = $index) {
+                <button type="button" class="hit" role="option" [class.on]="i === activeIndex()" [attr.aria-selected]="i === activeIndex()"
+                        (mouseenter)="activeIndex.set(i)" (click)="go(hit)">
+                  <span class="hit-icon"><mat-icon>{{ hit.icon }}</mat-icon></span>
+                  <span class="hit-label">{{ hit.label }}</span>
+                  <span class="hit-group">{{ hit.group }}</span>
+                </button>
+              }
+            } @else {
+              <div class="pop-empty"><mat-icon>search_off</mat-icon><span>Nada encontrado para “{{ query() }}”.</span></div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="spacer"></div>
+
+      <button type="button" class="icon-btn theme-btn" (click)="toggleTheme()"
+              [attr.aria-label]="dark() ? 'Mudar para tema claro' : 'Mudar para tema escuro'" [title]="dark() ? 'Tema claro' : 'Tema escuro'">
+        <mat-icon>{{ dark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <!-- Notificações -->
+      <div class="dd" data-dd>
+        <button type="button" class="icon-btn bell" (click)="toggleDropdown('notif')" aria-label="Notificações" [attr.aria-expanded]="dropdown() === 'notif'">
+          <mat-icon>{{ notifications.unread() ? 'notifications_active' : 'notifications_none' }}</mat-icon>
+          @if (notifications.unread() > 0) { <i class="dot">{{ notifications.unread() > 9 ? '9+' : notifications.unread() }}</i> }
+        </button>
+        @if (dropdown() === 'notif') {
+          <div class="panel-pop notif-panel">
+            <div class="pop-head">
+              <strong>Notificações</strong>
+              @if (notifications.unread() > 0) {
+                <button type="button" class="link-btn" (click)="notifications.markAllAsRead()">Marcar todas como lidas</button>
+              }
+            </div>
+            @for (n of latest(); track n.id) {
+              <button type="button" class="notif" [class.unread]="!n.lida" (click)="openNotification(n)">
+                <span class="n-icon" [attr.data-tipo]="n.tipo"><mat-icon>{{ iconFor(n.tipo) }}</mat-icon></span>
+                <span class="n-body"><strong>{{ n.titulo }}</strong><small>{{ n.mensagem }}</small><time>{{ n.data | date:'dd/MM · HH:mm' }}</time></span>
+                @if (!n.lida) { <i class="n-dot"></i> }
+              </button>
+            } @empty {
+              <div class="pop-empty"><mat-icon>notifications_off</mat-icon><span>Sem notificações por agora.</span></div>
+            }
+            <a routerLink="/app/notificacoes" class="pop-foot">Ver todas as notificações</a>
+          </div>
+        }
+      </div>
+
+      <!-- Utilizador -->
+      <div class="dd" data-dd>
+        <button type="button" class="user-btn" (click)="toggleDropdown('user')" [attr.aria-expanded]="dropdown() === 'user'" aria-label="Menu do utilizador">
+          <span class="avatar sm">{{ initial() }}</span>
+          <span class="user-meta"><b>{{ displayName() }}</b><small>{{ roleLabel() }}</small></span>
+          <mat-icon class="caret" [class.open]="dropdown() === 'user'">expand_more</mat-icon>
+        </button>
+        @if (dropdown() === 'user') {
+          <div class="panel-pop user-panel">
+            <div class="user-head">
+              <span class="avatar">{{ initial() }}</span>
+              <div><strong>{{ displayName() }}</strong><small>{{ auth.user()?.email }}</small></div>
+            </div>
+            <a routerLink="/app/perfil" class="menu-item"><mat-icon>person</mat-icon>Meu perfil</a>
+            <a routerLink="/app/notificacoes" class="menu-item"><mat-icon>notifications</mat-icon>Notificações
+              @if (notifications.unread() > 0) { <em class="count">{{ notifications.unread() }}</em> }
+            </a>
+            @if (auth.isAdmin()) { <a routerLink="/app/configuracoes" class="menu-item"><mat-icon>palette</mat-icon>Aparência</a> }
+            <a routerLink="/" class="menu-item"><mat-icon>public</mat-icon>Página pública</a>
+            <hr>
+            <button type="button" class="menu-item danger" (click)="auth.logout()"><mat-icon>logout</mat-icon>Terminar sessão</button>
+          </div>
+        }
+      </div>
+    </header>
+
+    <main class="app-main"><router-outlet/></main>
+  </div>
+
+  <button type="button" class="backdrop" (click)="menuOpen.set(false)" aria-label="Fechar menu"></button>
+</div>

@@ -1,90 +1,78 @@
-<div class="page">
+<div class="auth">
+  <app-auth-visual title="Faça parte da comunidade CLC." text="Crie a sua conta para se inscrever em eventos, comprar bilhetes e acompanhar os resultados."/>
 
-<form 
-[formGroup]="form"
-(ngSubmit)="submit()">
+  <section class="panel">
+    <form class="wide" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <a routerLink="/" class="back"><mat-icon>arrow_back</mat-icon>Voltar ao início</a>
+      <img class="mark" src="assets/clc-mark.svg" alt="CLC Home">
 
+      <header>
+        <h2>Criar conta</h2>
+        <p>Preencha os seus dados. Demora menos de um minuto.</p>
+      </header>
 
-<a routerLink="/">
-<img src="assets/clc-mark.svg">
-<b>CLC</b> HOME
-</a>
+      <div class="row">
+        <div class="field" [class.invalid]="invalid('nome')">
+          <label for="nome">Nome completo</label>
+          <div class="control"><mat-icon>person</mat-icon><input id="nome" formControlName="nome" placeholder="O seu nome" autocomplete="name"></div>
+          @if (invalid('nome')) { <small class="hint"><mat-icon>error</mat-icon>Indique o seu nome.</small> }
+        </div>
+        <div class="field" [class.invalid]="invalid('email')">
+          <label for="email">Email</label>
+          <div class="control"><mat-icon>mail</mat-icon><input id="email" type="email" formControlName="email" placeholder="o.seu@email.com" autocomplete="email"></div>
+          @if (invalid('email')) { <small class="hint"><mat-icon>error</mat-icon>Introduza um email válido.</small> }
+        </div>
+      </div>
 
+      <div class="row">
+        <div class="field">
+          <label for="telefone">Telefone <em>opcional</em></label>
+          <div class="control"><mat-icon>call</mat-icon><input id="telefone" type="tel" formControlName="telefone" placeholder="84 123 4567" autocomplete="tel"></div>
+        </div>
+        <div class="field">
+          <label for="provincia">Província <em>opcional</em></label>
+          <div class="control"><mat-icon>map</mat-icon><input id="provincia" formControlName="provincia" list="provincias" placeholder="Seleccione ou escreva"></div>
+          <datalist id="provincias">
+            @for (p of provincias; track p) { <option [value]="p"></option> }
+          </datalist>
+        </div>
+      </div>
 
-<span>Criar conta</span>
+      <div class="field">
+        <label for="endereco">Endereço <em>opcional</em></label>
+        <div class="control"><mat-icon>home</mat-icon><input id="endereco" formControlName="endereco" placeholder="Bairro, rua ou avenida" autocomplete="street-address"></div>
+      </div>
 
+      <div class="field" [class.invalid]="invalid('password')">
+        <label for="password">Senha</label>
+        <div class="control">
+          <mat-icon>lock</mat-icon>
+          <input id="password" class="pw" [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="Mínimo de 6 caracteres" autocomplete="new-password">
+          <button type="button" class="eye" (click)="showPassword.set(!showPassword())" [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (invalid('password')) { <small class="hint"><mat-icon>error</mat-icon>A senha deve ter pelo menos 6 caracteres.</small> }
+        @if (form.controls.password.value) {
+          <div class="strength" [attr.data-level]="strength().level">
+            <div class="bars"><i></i><i></i><i></i><i></i></div>
+            <span>Força da senha: {{ strength().label }}</span>
+          </div>
+        }
+      </div>
 
-<h1>
-Faça parte do CLC Home
-</h1>
+      @if (error()) {
+        <div class="callout callout-error" role="alert">
+          <mat-icon>error</mat-icon>
+          <div><strong>Não foi possível criar a conta</strong><span>{{ error() }}</span></div>
+        </div>
+      }
 
+      <button class="submit" [disabled]="loading()">
+        @if (loading()) { <span class="spinner"></span>A criar conta… } @else { Criar conta<mat-icon>arrow_forward</mat-icon> }
+      </button>
 
-<div class="grid">
-
-<label>
-Nome
-<input formControlName="nome">
-</label>
-
-
-<label>
-Email
-<input type="email" formControlName="email">
-</label>
-
-</div>
-
-
-<div class="grid">
-
-<label>
-Telefone
-<input formControlName="telefone">
-</label>
-
-
-<label>
-Província
-<input formControlName="provincia">
-</label>
-
-</div>
-
-
-<label>
-Endereço
-<input formControlName="endereco">
-</label>
-
-
-<label>
-Senha
-<input 
-type="password"
-formControlName="password">
-</label>
-
-
-<p *ngIf="error()">
-{{error()}}
-</p>
-
-
-<button>
-Criar conta
-</button>
-
-
-<small>
-Já tem conta?
-
-<a routerLink="/entrar">
-Entrar
-</a>
-
-</small>
-
-
-</form>
-
+      <p class="alt">Já tem conta? <a routerLink="/entrar">Entrar</a></p>
+    </form>
+  </section>
 </div>

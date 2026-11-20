@@ -1,105 +1,49 @@
 <div class="auth">
+  <app-auth-visual/>
 
-<section class="visual">
+  <section class="panel">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <a routerLink="/" class="back"><mat-icon>arrow_back</mat-icon>Voltar ao início</a>
+      <img class="mark" src="assets/clc-mark.svg" alt="CLC Home">
 
-<app-logo></app-logo>
+      <header>
+        <h2>Entrar na conta</h2>
+        <p>Bem-vindo de volta. Introduza os seus dados para continuar.</p>
+      </header>
 
-<div>
-<span>Plataforma cultural</span>
+      <div class="field" [class.invalid]="invalid('email')">
+        <label for="email">Email</label>
+        <div class="control">
+          <mat-icon>mail</mat-icon>
+          <input id="email" type="email" formControlName="email" placeholder="o.seu@email.com" autocomplete="email">
+        </div>
+        @if (invalid('email')) { <small class="hint"><mat-icon>error</mat-icon>Introduza um email válido.</small> }
+      </div>
 
-<h1>
-Eventos que conectam talentos.
-</h1>
+      <div class="field" [class.invalid]="invalid('password')">
+        <label for="password">Senha</label>
+        <div class="control">
+          <mat-icon>lock</mat-icon>
+          <input id="password" class="pw" [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="A sua senha" autocomplete="current-password">
+          <button type="button" class="eye" (click)="showPassword.set(!showPassword())" [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (invalid('password')) { <small class="hint"><mat-icon>error</mat-icon>Introduza a sua senha.</small> }
+      </div>
 
-<p>
-Gestão completa de eventos, inscrições,
-avaliações e resultados.
-</p>
+      @if (error()) {
+        <div class="callout callout-error" role="alert">
+          <mat-icon>error</mat-icon>
+          <div><strong>Não foi possível entrar</strong><span>{{ error() }}</span></div>
+        </div>
+      }
 
-</div>
+      <button class="submit" [disabled]="loading()">
+        @if (loading()) { <span class="spinner"></span>A entrar… } @else { Entrar<mat-icon>arrow_forward</mat-icon> }
+      </button>
 
-</section>
-
-
-<section class="panel">
-
-<form [formGroup]="form"
-(ngSubmit)="submit()">
-
-
-<img src="assets/clc-mark.svg">
-
-
-<span>
-Bem-vindo
-</span>
-
-
-<h2>
-Entrar na conta
-</h2>
-
-
-<p>
-Faça login para continuar.
-</p>
-
-
-
-<label>
-Email
-
-<input 
-type="email"
-formControlName="email"
-placeholder="seu@email.com">
-
-</label>
-
-
-
-<label>
-Senha
-
-<input 
-type="password"
-formControlName="password"
-placeholder="••••••••">
-
-</label>
-
-
-
-<div class="err" *ngIf="error()">
-
-{{error()}}
-
-</div>
-
-
-
-<button>
-
-{{loading()?'A entrar...':'Entrar'}}
-
-</button>
-
-
-
-<small>
-
-Não tem conta?
-
-<a routerLink="/registar">
-Registar
-</a>
-
-</small>
-
-
-</form>
-
-</section>
-
-
+      <p class="alt">Ainda não tem conta? <a routerLink="/registar">Criar conta</a></p>
+    </form>
+  </section>
 </div>

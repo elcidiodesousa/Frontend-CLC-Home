@@ -75,7 +75,7 @@ import { JuryService } from '../core/jury.service';
 
 
 <div 
-class="notice"
+class="callout callout-error" role="alert"
 *ngIf="erro()">
 
 {{erro()}}
@@ -526,7 +526,7 @@ margin-bottom:20px;
 
 .heading span{
 
-color:#6d28d9;
+color:var(--primary);
 
 text-transform:uppercase;
 
@@ -542,7 +542,7 @@ font-weight:800;
 
 .heading h1{
 
-color:#11164b;
+color:var(--text);
 
 margin:6px 0;
 
@@ -554,7 +554,7 @@ font-size:2rem;
 
 .heading p{
 
-color:#777c94;
+color:var(--muted);
 
 }
 
@@ -566,9 +566,9 @@ color:#777c94;
 
 padding:12px;
 
-background:#fff1f0;
+background:var(--danger-soft);
 
-color:#b42318;
+color:var(--danger-ink);
 
 border-radius:10px;
 
@@ -588,7 +588,7 @@ grid-template-columns:1fr 1fr;
 
 gap:15px;
 
-background:#fff;
+background:var(--surface);
 
 padding:18px;
 
@@ -608,7 +608,7 @@ gap:8px;
 
 font-weight:700;
 
-color:#303556;
+color:var(--text);
 
 font-size:.85rem;
 
@@ -624,7 +624,7 @@ input{
 
 padding:12px;
 
-border:1px solid #ddd;
+border:1px solid var(--line);
 
 border-radius:10px;
 
@@ -653,8 +653,8 @@ margin-top:20px;
 
 background:linear-gradient(
 120deg,
-#11165b,
-#43208f
+var(--ink),
+var(--primary-dark)
 );
 
 
@@ -715,7 +715,7 @@ width:45px;
 
 height:45px;
 
-color:#f6b323;
+color:var(--accent);
 
 
 }
@@ -726,7 +726,7 @@ color:#f6b323;
 .candidate span{
 
 
-color:#f6b323;
+color:var(--accent);
 
 font-size:.7rem;
 
@@ -790,7 +790,7 @@ color:#d0d4ef;
 
 font-size:2rem;
 
-color:#f6b323;
+color:var(--accent);
 
 
 }
@@ -867,11 +867,11 @@ display:grid;
 
 place-items:center;
 
-background:#f0eaff;
+background:var(--primary-soft);
 
 border-radius:12px;
 
-color:#6d28d9;
+color:var(--primary);
 
 
 }
@@ -884,7 +884,7 @@ color:#6d28d9;
 
 margin:0;
 
-color:#11164b;
+color:var(--text);
 
 
 }
@@ -899,7 +899,7 @@ margin:5px 0 0;
 
 font-size:.75rem;
 
-color:#888;
+color:var(--muted);
 
 
 }
@@ -939,8 +939,8 @@ button{
 
 background:linear-gradient(
 90deg,
-#6d28d9,
-#7c3aed
+var(--primary),
+var(--primary-2)
 );
 
 
@@ -985,9 +985,9 @@ align-items:center;
 
 gap:10px;
 
-background:#dcfce7;
+background:var(--success-soft);
 
-color:#15803d;
+color:var(--success-ink);
 
 padding:10px 15px;
 
@@ -1037,7 +1037,7 @@ border-radius:15px;
 
 text-align:center;
 
-color:#777c94;
+color:var(--muted);
 
 
 }
@@ -1053,7 +1053,7 @@ width:55px;
 
 height:55px;
 
-color:#6d28d9;
+color:var(--primary);
 
 
 }
@@ -1063,7 +1063,7 @@ color:#6d28d9;
 .empty h2{
 
 
-color:#11164b;
+color:var(--text);
 
 }
 

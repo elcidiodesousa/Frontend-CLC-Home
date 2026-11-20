@@ -1,0 +1,297 @@
+<div class="landing">
+
+  <!-- ===== Navbar ===== -->
+  <header class="nav" [class.scrolled]="scrolled()" [class.open]="menuOpen()">
+    <div class="nav-in">
+      <a routerLink="/" class="nav-brand" aria-label="CLC Home" (click)="menuOpen.set(false)"><app-logo [compact]="true"/></a>
+
+      <nav class="nav-links" aria-label="Secções">
+        @for (l of links; track l.id) {
+          <a [href]="'#' + l.id" [class.on]="section() === l.id" (click)="menuOpen.set(false)">{{ l.label }}</a>
+        }
+      </nav>
+
+      <div class="nav-cta">
+        @if (auth.logged()) {
+          <a class="btn btn-primary" routerLink="/app/dashboard"><mat-icon>space_dashboard</mat-icon>Ir para a plataforma</a>
+        } @else {
+          <a class="btn btn-ghost-light" routerLink="/entrar">Entrar</a>
+          <a class="btn btn-primary" routerLink="/registar">Criar conta</a>
+        }
+      </div>
+
+      <button type="button" class="burger" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-label="Abrir menu">
+        <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
+      </button>
+    </div>
+
+    <div class="sheet">
+      @for (l of links; track l.id) {
+        <a [href]="'#' + l.id" (click)="menuOpen.set(false)"><mat-icon>{{ l.icon }}</mat-icon>{{ l.label }}</a>
+      }
+      <div class="sheet-cta">
+        @if (auth.logged()) {
+          <a class="btn btn-primary" routerLink="/app/dashboard">Ir para a plataforma</a>
+        } @else {
+          <a class="btn btn-ghost-light" routerLink="/entrar">Entrar</a>
+          <a class="btn btn-primary" routerLink="/registar">Criar conta</a>
+        }
+      </div>
+    </div>
+  </header>
+
+  @if (data) {
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="hero-bg" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="org-pill"><i></i>{{ data.institucional.nomeOrganizacao }}</span>
+          <h1>{{ data.institucional.slogan || 'Talentos merecem uma gestão à altura.' }}</h1>
+          <p>{{ data.institucional.sobreNos || 'Organizamos experiências culturais, aproximamos talentos e comunidades.' }}</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="#eventos">Explorar eventos<mat-icon>arrow_downward</mat-icon></a>
+            @if (!auth.logged()) {
+              <a class="btn btn-ghost-light btn-lg" routerLink="/entrar"><mat-icon>login</mat-icon>Aceder à plataforma</a>
+            }
+          </div>
+          <dl class="stats">
+            <div><dt>{{ data.eventosActuais.length }}</dt><dd>Eventos actuais</dd></div>
+            <div><dt>{{ data.historico.length }}</dt><dd>Eventos realizados</dd></div>
+            <div><dt>{{ data.institucional.numeroMembros || data.membros.length }}</dt><dd>Membros</dd></div>
+          </dl>
+        </div>
+
+        <div class="hero-visual">
+          <div class="frame">
+            @if (destaque()) {
+              @if (destaque()!.tipo === 'VIDEO') {
+                <video [src]="url(destaque()!.mediaUrl)" controls muted playsinline></video>
+              } @else {
+                <img [src]="url(destaque()!.mediaUrl)" alt="Evento CLC">
+              }
+            } @else {
+              <div class="visual-empty"><mat-icon>festival</mat-icon><b>CLC Home</b><span>Cultura, talento e comunidade</span></div>
+            }
+          </div>
+          @if (data.eventosActuais.length) {
+            <a class="float-card" [routerLink]="['/eventos', data.eventosActuais[0].evento.id]">
+              <span class="fc-icon"><mat-icon>event</mat-icon></span>
+              <span class="fc-text"><small>Próximo evento</small><b>{{ data.eventosActuais[0].evento.titulo }}</b>
+                <em>{{ data.eventosActuais[0].evento.dataInicio | date:'dd MMM yyyy' }}</em></span>
+              <mat-icon class="fc-go">arrow_forward</mat-icon>
+            </a>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Sobre ===== -->
+    <section id="sobre" class="section">
+      <div class="wrap">
+        <div class="section-head" appReveal>
+          <h2>Quem somos e onde queremos chegar</h2>
+          <p>Uma organização feita de pessoas que acreditam no poder da cultura para unir comunidades.</p>
+        </div>
+        <div class="about-grid" appReveal="stagger">
+          <article>
+            <span class="tile"><mat-icon>diversity_3</mat-icon></span>
+            <h3>Quem somos</h3>
+            <p>{{ data.institucional.quemSomos || data.institucional.sobreNos }}</p>
+          </article>
+          <article>
+            <span class="tile"><mat-icon>flag</mat-icon></span>
+            <h3>Onde pretendemos chegar</h3>
+            <p>{{ data.institucional.ondePretendemosChegar || data.institucional.visao }}</p>
+          </article>
+          <article>
+            <span class="tile"><mat-icon>rocket_launch</mat-icon></span>
+            <h3>Missão e visão</h3>
+            <p><b>Missão</b> {{ data.institucional.missao }}</p>
+            <p><b>Visão</b> {{ data.institucional.visao }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Eventos ===== -->
+    <section id="eventos" class="section tint">
+      <div class="wrap">
+        <div class="section-head row" appReveal>
+          <div>
+            <h2>Próximos eventos</h2>
+            <p>Escolha um evento, conheça os detalhes e faça a sua inscrição.</p>
+          </div>
+          <a class="more" routerLink="/eventos">Ver todos<mat-icon>arrow_forward</mat-icon></a>
+        </div>
+        <div class="card-grid" appReveal="stagger">
+          @for (item of data.eventosActuais; track item.evento.id) {
+            <article class="event-card">
+              <a class="cover" [routerLink]="['/eventos', item.evento.id]" [attr.aria-label]="item.evento.titulo">
+                @if (capa(item)) { <img [src]="url(capa(item))" [alt]="item.evento.titulo" loading="lazy"> } @else { <mat-icon>event</mat-icon> }
+                <span class="date-chip"><b>{{ item.evento.dataInicio | date:'dd' }}</b><small>{{ item.evento.dataInicio | date:'MMM' }}</small></span>
+                @if (emDestaque(item)) { <span class="featured"><mat-icon>star</mat-icon>Em destaque</span> }
+              </a>
+              <div class="body">
+                <h3>{{ item.evento.titulo }}</h3>
+                <p>{{ item.evento.descricao }}</p>
+                <small class="where"><mat-icon>location_on</mat-icon>{{ item.evento.local }}</small>
+                <div class="card-actions">
+                  <a class="btn btn-ghost" [routerLink]="['/eventos', item.evento.id]">Ver detalhes</a>
+                  <a class="btn btn-primary" [routerLink]="auth.logged() ? ['/app/inscricoes'] : ['/registar']" [queryParams]="{evento: item.evento.id}">Inscrever-me<mat-icon>arrow_forward</mat-icon></a>
+                </div>
+              </div>
+            </article>
+          } @empty {
+            <div class="empty"><mat-icon>event_busy</mat-icon><p>Ainda não há eventos publicados.</p></div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Histórico ===== -->
+    <section id="historico" class="section">
+      <div class="wrap">
+        <div class="section-head" appReveal>
+          <h2>Eventos realizados</h2>
+          <p>Reviva os melhores momentos através das fotografias e vídeos.</p>
+        </div>
+        <div class="card-grid" appReveal="stagger">
+          @for (item of data.historico; track item.evento.id) {
+            <article class="event-card history">
+              <div class="cover">
+                @if (capa(item)) { <img [src]="url(capa(item))" [alt]="item.evento.titulo" loading="lazy"> } @else { <mat-icon>photo_library</mat-icon> }
+                <span class="date-chip"><b>{{ item.evento.dataFim | date:'dd' }}</b><small>{{ item.evento.dataFim | date:'MMM yyyy' }}</small></span>
+              </div>
+              <div class="body">
+                <h3>{{ item.evento.titulo }}</h3>
+                <p>{{ item.evento.descricao }}</p>
+                <small class="where"><mat-icon>location_on</mat-icon>{{ item.evento.local }}</small>
+                <div class="media-count">
+                  <span><mat-icon>photo</mat-icon>{{ fotos(item) }} fotos</span>
+                  <span><mat-icon>videocam</mat-icon>{{ videos(item) }} vídeos</span>
+                </div>
+                <button type="button" class="btn btn-dark" (click)="abrirGaleria(item)"><mat-icon>collections</mat-icon>Ver fotos e vídeos</button>
+              </div>
+            </article>
+          } @empty {
+            <div class="empty"><mat-icon>photo_library</mat-icon><p>O histórico aparecerá aqui quando os eventos forem encerrados.</p></div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Equipa ===== -->
+    <section id="equipa" class="section dark">
+      <div class="wrap">
+        <div class="section-head" appReveal>
+          <h2>As pessoas por detrás do CLC</h2>
+          <p>{{ data.institucional.numeroMembros || data.membros.length }} membros unidos pela cultura e pelo talento.</p>
+        </div>
+        <div class="team-grid" appReveal="stagger">
+          @for (m of data.membros; track m.id) {
+            <article>
+              <div class="photo">
+                @if (m.fotoUrl) { <img [src]="url(m.fotoUrl)" [alt]="m.nome" loading="lazy"> } @else { <mat-icon>person</mat-icon> }
+              </div>
+              <h3>{{ m.nome }}</h3>
+              <strong>{{ m.cargo.replaceAll('_', ' ') }}</strong>
+              <p>{{ m.miniBiografia || m.biografia }}</p>
+              @if (m.linkedinUrl || m.websiteUrl) {
+                <div class="links">
+                  @if (m.linkedinUrl) { <a [href]="m.linkedinUrl" target="_blank" rel="noopener"><mat-icon>work</mat-icon>LinkedIn</a> }
+                  @if (m.websiteUrl) { <a [href]="m.websiteUrl" target="_blank" rel="noopener"><mat-icon>language</mat-icon>Website</a> }
+                </div>
+              }
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Chamada final ===== -->
+    @if (!auth.logged()) {
+      <section class="cta-band">
+        <div class="wrap cta-in" appReveal>
+          <div>
+            <h2>Pronto para fazer parte?</h2>
+            <p>Crie a sua conta gratuita, inscreva-se em eventos e acompanhe tudo num só lugar.</p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn btn-gold btn-lg" routerLink="/registar">Criar conta<mat-icon>arrow_forward</mat-icon></a>
+            <a class="btn btn-ghost-light btn-lg" routerLink="/entrar">Já tenho conta</a>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ===== Rodapé ===== -->
+    <footer class="footer">
+      <div class="wrap foot-grid">
+        <div class="foot-about"><app-logo/><p>{{ data.institucional.sobreNos }}</p></div>
+        <div>
+          <h4>Contactos</h4>
+          @if (data.institucional.email) { <span><mat-icon>mail</mat-icon>{{ data.institucional.email }}</span> }
+          @if (data.institucional.telefone) { <span><mat-icon>call</mat-icon>{{ data.institucional.telefone }}</span> }
+          @if (data.institucional.endereco) { <span><mat-icon>location_on</mat-icon>{{ data.institucional.endereco }}</span> }
+        </div>
+        <div>
+          <h4>Plataforma</h4>
+          <a routerLink="/eventos">Eventos</a>
+          <a routerLink="/entrar">Entrar</a>
+          <a routerLink="/registar">Criar conta</a>
+          @if (data.institucional.facebookUrl) { <a [href]="data.institucional.facebookUrl" target="_blank" rel="noopener">Facebook</a> }
+          @if (data.institucional.instagramUrl) { <a [href]="data.institucional.instagramUrl" target="_blank" rel="noopener">Instagram</a> }
+          @if (data.institucional.youtubeUrl) { <a [href]="data.institucional.youtubeUrl" target="_blank" rel="noopener">YouTube</a> }
+        </div>
+      </div>
+      <div class="wrap copyright">
+        <span>© 2026 CLC Home · Todos os direitos reservados.</span>
+        <span>Desenvolvido por Elcidio De Sousa</span>
+      </div>
+    </footer>
+  } @else {
+    <div class="loading-screen"><span class="ring"></span><p>A carregar o CLC Home…</p></div>
+  }
+
+  <!-- ===== Galeria ===== -->
+  @if (galeriaAberta()) {
+    <div class="gallery-overlay" (click)="fecharGaleria()">
+      <section class="gallery-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <header>
+          <div><small>Galeria do evento</small><h2>{{ galeriaAberta()!.evento.titulo }}</h2></div>
+          <button type="button" class="close" (click)="fecharGaleria()" aria-label="Fechar galeria"><mat-icon>close</mat-icon></button>
+        </header>
+        <div class="gallery-tabs">
+          <button type="button" [class.active]="aba() === 'FOTO'" (click)="aba.set('FOTO')"><mat-icon>photo_library</mat-icon>Fotos ({{ fotos(galeriaAberta()!) }})</button>
+          <button type="button" [class.active]="aba() === 'VIDEO'" (click)="aba.set('VIDEO')"><mat-icon>video_library</mat-icon>Vídeos ({{ videos(galeriaAberta()!) }})</button>
+        </div>
+        <div class="gallery-full">
+          @for (media of mediasFiltradas(); track media.id) {
+            <figure (click)="selecionarMedia(media)">
+              @if (media.tipo === 'VIDEO') {
+                <video [src]="url(media.mediaUrl)" controls preload="metadata"></video>
+              } @else {
+                <img [src]="url(media.mediaUrl)" [alt]="media.legenda || galeriaAberta()!.evento.titulo" loading="lazy">
+              }
+              @if (media.legenda) { <figcaption>{{ media.legenda }}</figcaption> }
+            </figure>
+          } @empty {
+            <div class="gallery-empty"><mat-icon>image_not_supported</mat-icon>Ainda não há conteúdos nesta secção.</div>
+          }
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (mediaAtiva()) {
+    <div class="lightbox" (click)="mediaAtiva.set(null)">
+      <button type="button" aria-label="Fechar"><mat-icon>close</mat-icon></button>
+      @if (mediaAtiva()!.tipo === 'VIDEO') {
+        <video [src]="url(mediaAtiva()!.mediaUrl)" controls autoplay (click)="$event.stopPropagation()"></video>
+      } @else {
+        <img [src]="url(mediaAtiva()!.mediaUrl)" [alt]="mediaAtiva()!.legenda || 'Fotografia do evento'" (click)="$event.stopPropagation()">
+      }
+    </div>
+  }
+</div>

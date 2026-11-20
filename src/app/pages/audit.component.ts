@@ -8,7 +8,7 @@ import {AuditLog, AuditService} from '../core/audit.service';
   imports:[DatePipe,MatIconModule],
   template:`
   <section class="heading"><div><span>Segurança</span><h1>Auditoria do sistema</h1><p>Histórico das acções sensíveis realizadas na plataforma.</p></div></section>
-  @if(error()){<div class="error"><mat-icon>warning</mat-icon>{{error()}}</div>}
+  @if(error()){<div class="callout callout-error" role="alert"><mat-icon>warning</mat-icon>{{error()}}</div>}
   <section class="panel">
     <div class="head"><span>Utilizador</span><span>Acção</span><span>Recurso</span><span>Detalhes</span><span>Data</span></div>
     @if(loading()){<div class="empty">A carregar registos...</div>}
@@ -24,7 +24,7 @@ import {AuditLog, AuditService} from '../core/audit.service';
   </section>
   `,
   styles:[`
-  .heading span{color:#6d28d9;text-transform:uppercase;letter-spacing:.13em;font-size:.7rem;font-weight:800}.heading h1{margin:6px 0;color:#11164b}.heading p{margin:0;color:#777c94}.panel{background:#fff;border-radius:16px;overflow:hidden;margin-top:22px;box-shadow:0 8px 28px #1419460d}.head,.row{display:grid;grid-template-columns:1.2fr .8fr .8fr 1.5fr .9fr;gap:14px;align-items:center;padding:14px 20px}.head{background:#f8f9fc;color:#777c94;text-transform:uppercase;font-size:.68rem;font-weight:800}.row{border-top:1px solid #eff0f5;color:#565b75;font-size:.78rem}.row>div{display:flex;flex-direction:column}.row strong{color:#242850}.row small{color:#979bad;margin-top:3px}.action{justify-self:start;background:#efe8ff;color:#6d28d9;padding:6px 9px;border-radius:8px;font-weight:800;font-size:.66rem}.empty{padding:44px;text-align:center;color:#7b8097}.error{display:flex;gap:8px;background:#fff2f0;color:#b42318;padding:13px;border-radius:11px;margin-top:16px}@media(max-width:850px){.head{display:none}.row{grid-template-columns:1fr auto}.row>span:not(.action){display:none}}
+  .heading span{color:var(--primary);text-transform:uppercase;letter-spacing:.13em;font-size:.7rem;font-weight:800}.heading h1{margin:6px 0;color:var(--text)}.heading p{margin:0;color:var(--muted)}.panel{background:var(--surface);border-radius:16px;overflow:hidden;margin-top:22px;box-shadow:0 8px 28px #1419460d}.head,.row{display:grid;grid-template-columns:1.2fr .8fr .8fr 1.5fr .9fr;gap:14px;align-items:center;padding:14px 20px}.head{background:var(--surface-soft);color:var(--muted);text-transform:uppercase;font-size:.68rem;font-weight:800}.row{border-top:1px solid var(--line);color:var(--text);font-size:.78rem}.row>div{display:flex;flex-direction:column}.row strong{color:var(--text)}.row small{color:var(--muted);margin-top:3px}.action{justify-self:start;background:var(--primary-soft);color:var(--primary);padding:6px 9px;border-radius:8px;font-weight:800;font-size:.66rem}.empty{padding:44px;text-align:center;color:var(--muted)}.error{display:flex;gap:8px;background:var(--danger-soft);color:var(--danger-ink);padding:13px;border-radius:11px;margin-top:16px}@media(max-width:850px){.head{display:none}.row{grid-template-columns:1fr auto}.row>span:not(.action){display:none}}
   `]
 })
 export class AuditComponent implements OnInit {

@@ -1,0 +1,61 @@
+<button type="button" class="launcher" [class.open]="aberto()" (click)="alternar()" [attr.aria-label]="aberto() ? 'Fechar CLC IA' : 'Abrir CLC IA'">
+  @if (aberto()) { <mat-icon>close</mat-icon> } @else { <mat-icon>auto_awesome</mat-icon><i class="live"></i><span class="tip">Pergunte à CLC IA</span> }
+</button>
+
+@if (aberto()) {
+  <section class="chat" role="dialog" aria-label="Conversa com a CLC IA">
+    <header>
+      <div class="bot"><mat-icon>auto_awesome</mat-icon></div>
+      <div class="title"><strong>CLC IA</strong><span><i></i>{{ subtitulo() }}</span></div>
+      <button type="button" (click)="novaConversa()" aria-label="Nova conversa" title="Nova conversa"><mat-icon>add_comment</mat-icon></button>
+      <button type="button" (click)="aberto.set(false)" aria-label="Minimizar" title="Minimizar"><mat-icon>remove</mat-icon></button>
+    </header>
+
+    <div class="messages" #scroller aria-live="polite">
+      @for (m of mensagens(); track $index; let i = $index) {
+        <div class="row" [class.user]="m.autor === 'user'">
+          @if (m.autor === 'ai') { <span class="mini-bot"><mat-icon>auto_awesome</mat-icon></span> }
+          <div class="col">
+            <div class="bubble" [class.error]="m.erro">
+              @if (m.autor === 'user') {
+                {{ m.texto }}
+              } @else {
+                @if (m.erro) { <span class="err-title"><mat-icon>error</mat-icon>Algo correu mal</span> }
+                @for (b of m.blocos; track $index) {
+                  @if (b.tipo === 'p') {
+                    <p>@for (p of b.partes; track $index) {<span [class.b]="p.b">{{ p.t }}</span>}</p>
+                  } @else {
+                    <ul>@for (item of b.itens; track $index) {<li>@for (p of item; track $index) {<span [class.b]="p.b">{{ p.t }}</span>}</li>}</ul>
+                  }
+                }
+                @if (m.erro && i === mensagens().length - 1) {
+                  <button type="button" class="retry" (click)="repetir()"><mat-icon>refresh</mat-icon>Tentar novamente</button>
+                }
+              }
+            </div>
+            <div class="meta">
+              <time>{{ m.hora | date:'HH:mm' }}</time>
+              @if (m.autor === 'ai' && !m.erro && i > 0) {
+                <button type="button" (click)="copiar(m, i)" [attr.aria-label]="'Copiar resposta'">
+                  <mat-icon>{{ copiado() === i ? 'check' : 'content_copy' }}</mat-icon>{{ copiado() === i ? 'Copiado' : 'Copiar' }}
+                </button>
+              }
+            </div>
+            @if (m.autor === 'ai' && m.sugestoes?.length && i === mensagens().length - 1) {
+              <div class="chips">@for (s of m.sugestoes; track s) { <button type="button" (click)="enviarSugestao(s)">{{ s }}</button> }</div>
+            }
+          </div>
+        </div>
+      }
+      @if (carregando()) {
+        <div class="row"><span class="mini-bot"><mat-icon>auto_awesome</mat-icon></span><div class="bubble typing" aria-label="A escrever"><i></i><i></i><i></i></div></div>
+      }
+    </div>
+
+    <form (ngSubmit)="enviar()">
+      <input [(ngModel)]="texto" name="mensagem" maxlength="1000" [placeholder]="placeholder()" autocomplete="off" aria-label="Mensagem">
+      <button type="submit" [disabled]="carregando() || !texto.trim()" aria-label="Enviar mensagem"><mat-icon>arrow_upward</mat-icon></button>
+    </form>
+    <small><mat-icon>shield</mat-icon>Não envie PIN, palavra-passe ou chaves secretas.</small>
+  </section>
+}
